@@ -397,11 +397,11 @@
                 ;; close connections if the request is still live
                 (confirm-live-connection-with-abort)
                 (log/info "cookie has expired, triggering closing of websocket connections")
-                (async/>! request-close-promise-chan :cookie-expired)
+                (async/>! request-close-promise-chan [:cookie-expired nil nil "Cookie Expired"])
                 (catch Exception _
                   (log/debug "ignoring exception generated from closed connection")))))))
       (catch Exception e
-        (async/>!! request-close-promise-chan :process-error)
+        (async/>!! request-close-promise-chan [:process-error nil e "Unexpected error"])
         (log/error e "error while processing websocket response"))))
   ;; return an empty response map to maintain consistency with the http case
   {})

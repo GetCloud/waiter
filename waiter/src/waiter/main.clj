@@ -143,7 +143,8 @@
   (Thread/setDefaultUncaughtExceptionHandler
     (reify Thread$UncaughtExceptionHandler
       (uncaughtException [_ thread throwable]
-        (log/error throwable (str (.getName thread) " threw exception: " (.getMessage throwable))))))
+        (->> (str (.getName thread) " triggered uncaught exception handler: " (.getMessage throwable))
+             (log/error throwable)))))
   (jvm-metrics/instrument-jvm)
   (let [{:keys [validate-config]} (parse-options args)]
     (if validate-config
