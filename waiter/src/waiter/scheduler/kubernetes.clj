@@ -217,7 +217,10 @@
           restart-count (get-in pod [:status :containerStatuses 0 :restartCount])
           run-as-user (or (get-in pod [:metadata :labels :waiter/user])
                           ;; falling back to namespace for legacy pods missing the waiter/user label
-                          (k8s-object->namespace pod))]
+                          (k8s-object->namespace pod))
+          pod-status (some-> pod :status)]
+      (println "pod->ServiceInstance task state:" pod-status)
+      (log/info "pod->ServiceInstance task state:" pod-status)
       (scheduler/make-ServiceInstance
         {:extra-ports (->> (get-in pod [:metadata :annotations :waiter/port-count])
                            Integer/parseInt range next (mapv #(+ port0 %)))

@@ -161,8 +161,10 @@
   (let [service-id (remove-slash-prefix (get-in marathon-response (conj service-keys :id)))
         framework-id (retrieve-framework-id-fn)
         common-extractor-fn (fn [instance-id marathon-task-response]
-                              (let [{:keys [appId host message slaveId]} marathon-task-response
+                              (let [{:keys [appId host message slaveId state]} marathon-task-response
                                     log-directory (mesos/build-sandbox-path mesos-api slaveId framework-id instance-id)]
+                                (println "response-data->service-instances task state:" state)
+                                (log/info "response-data->service-instances task state:" state)
                                 (cond-> {:host host
                                          :service-id (remove-slash-prefix appId)}
                                   log-directory
